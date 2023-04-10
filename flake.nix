@@ -14,7 +14,7 @@
           tagsformation =
             final.haskell-nix.project' {
               src = ./.;
-              compiler-nix-name = "ghc925";
+              compiler-nix-name = "ghc927";
               index-state = "2023-04-09T00:00:00Z";
               # This is used by `nix develop .` to open a shell for use with
               # `cabal`, `hlint` and `haskell-language-server`

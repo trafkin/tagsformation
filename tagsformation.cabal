@@ -72,7 +72,7 @@ executable tagsformation
       , amazonka              >=2.0   && <2.1
       , amazonka-core
       , amazonka-s3
-      , base ^>=4.15.1.0
+      , base >= 4.7
       , bytestring
       , conduit
       , conduit-extra
