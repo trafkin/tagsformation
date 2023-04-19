@@ -1,15 +1,12 @@
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE OverloadedLabels #-}
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE ViewPatterns #-}
 
-module Main (main) where
+module Helpers where
 
 import Amazonka
-import Helpers
-import Buckets
-import CloudformationTags
-import Amazonka.S3
-import Amazonka.CloudFormation
-import Control.Lens
 import Control.Monad
 import Control.Monad.IO.Class
 import Data.Conduit
@@ -20,7 +17,5 @@ import qualified Data.Text.IO as Text
 import System.IO
 
 
-main :: IO ()
-main =
-    --listBucket Ohio "rivendel-sccache"
-    listRoles Ohio
+say :: MonadIO m => Text -> m ()
+say = liftIO . Text.putStrLn

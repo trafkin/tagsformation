@@ -10,6 +10,8 @@ source-repository-package
     lib/amazonka-core
     lib/amazonka
     lib/services/amazonka-s3
+    lib/services/amazonka-iam
+    lib/services/amazonka-cloudformation
     lib/services/amazonka-sts
     lib/services/amazonka-sso
   --sha256: 1ibzf8gaxc3l152x5bhppkkr0dz7c41s1zzv5a2rr46hf1fal41j
