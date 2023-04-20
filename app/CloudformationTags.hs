@@ -2,30 +2,24 @@
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE OverloadedLabels #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE ViewPatterns #-}
 
 module CloudformationTags where
 
 import Helpers
 import Amazonka
-import Amazonka.S3
 import Amazonka.CloudFormation
 import Control.Lens
 import Control.Monad
-import Control.Monad.IO.Class
-import Data.Conduit
-import qualified Data.Conduit.Binary as CB
-import qualified Data.Conduit.List as CL
+import Data.Maybe (isJust)
 import Data.Generics.Labels ()
-import qualified Data.Text.IO as Text
 import System.IO
 
 
-listRoles :: Region -> IO ()
-listRoles r = do
-  lgr <- newLogger Debug stdout
-  env <- newEnv discover <&> set #envLogger lgr . within r
-  say  "Listing Roles"
+--listRoles :: Region -> IO ()
+--listRoles r = do
+  --lgr <- newLogger Debug stdout
+  --env <- newEnv discover <&> set #envLogger lgr . within r
+  --say  "Listing Roles"
 
 
 listStacks :: Region -> IO ()
@@ -38,7 +32,9 @@ listStacks r = do
     case rs of
       Nothing -> say "No Stacks"
       Just stacks -> do
-        forM_ stacks $ \s -> do
+        filteredStacks <- filterM (\s -> return $ isJust ( s ^. #tags) ) stacks
+
+        forM_ filteredStacks $ \s -> do
               say $ "Stack: " <> toText (s ^. #stackName)
               say $ "Status: " <> toText (s ^. #stackStatus)
               say $ "Created: " <> toText (s ^. #creationTime)
