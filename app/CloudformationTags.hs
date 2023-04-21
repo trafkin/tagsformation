@@ -1,18 +1,19 @@
-{-# LANGUAGE DataKinds #-}
-{-# LANGUAGE FlexibleContexts #-}
-{-# LANGUAGE OverloadedLabels #-}
+{-# LANGUAGE DataKinds         #-}
+{-# LANGUAGE FlexibleContexts  #-}
+{-# LANGUAGE OverloadedLabels  #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module CloudformationTags where
 
-import Helpers
-import Amazonka
-import Amazonka.CloudFormation
-import Control.Lens
-import Control.Monad
-import Data.Maybe (isJust)
-import Data.Generics.Labels ()
-import System.IO
+import           Amazonka
+import           Amazonka.CloudFormation
+import           Conduit                 (ResourceT)
+import           Control.Lens
+import           Control.Monad
+import           Data.Generics.Labels    ()
+import           Data.Maybe              (isJust)
+import           Helpers
+import           System.IO
 
 
 --listRoles :: Region -> IO ()
@@ -21,15 +22,12 @@ import System.IO
   --env <- newEnv discover <&> set #envLogger lgr . within r
   --say  "Listing Roles"
 
-
-listStacks :: Region -> IO ()
-listStacks r = do
+describeTags :: Region -> ResourceT IO ()
+describeTags r = do
   lgr <- newLogger Debug stdout
   env <- newEnv discover <&> set #envLogger lgr . within r
-
-  runResourceT $ do
-    rs <- view #stacks <$> send env newDescribeStacks
-    case rs of
+  rs <- view #stacks <$> send env newDescribeStacks
+  case rs of
       Nothing -> say "No Stacks"
       Just stacks -> do
         filteredStacks <- filterM (\s -> return $ isJust ( s ^. #tags) ) stacks
@@ -45,4 +43,7 @@ listStacks r = do
                         say $ "  " <> toText (t ^. #key) <> ": " <> toText (t ^. #value)
                 Nothing -> say "No Tags"
 
-
+listStacks :: Region -> IO ()
+listStacks r = do
+   describeTags r
+   & runResourceT

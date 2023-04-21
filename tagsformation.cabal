@@ -66,6 +66,7 @@ executable tagsformation
       Buckets
       CloudformationTags
       Helpers
+      IAMTags
 
     -- LANGUAGE extensions used by modules in this package.
     -- other-extensions:
@@ -76,6 +77,7 @@ executable tagsformation
       , amazonka-core
       , amazonka-s3
       , amazonka-cloudformation
+      , amazonka-iam
       , base ^>=4.16.4.0
       , bytestring
       , conduit

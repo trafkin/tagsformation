@@ -4,8 +4,6 @@
 module Main (main) where
 
 import Amazonka
-import Helpers
-import Buckets
 import CloudformationTags
 
 
