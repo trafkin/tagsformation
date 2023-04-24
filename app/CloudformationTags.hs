@@ -13,7 +13,6 @@ import           Control.Monad
 import           Data.Generics.Labels    ()
 import           Data.Maybe              (isJust)
 import           Helpers
-import           System.IO
 
 
 --listRoles :: Region -> IO ()
@@ -22,28 +21,28 @@ import           System.IO
   --env <- newEnv discover <&> set #envLogger lgr . within r
   --say  "Listing Roles"
 
-describeTags :: Region -> ResourceT IO ()
-describeTags r = do
-  lgr <- newLogger Debug stdout
-  env <- newEnv discover <&> set #envLogger lgr . within r
+
+describeTags :: Env -> ResourceT IO ()
+describeTags env = do
+
   rs <- view #stacks <$> send env newDescribeStacks
   case rs of
       Nothing -> say "No Stacks"
       Just stacks -> do
-        filteredStacks <- filterM (\s -> return $ isJust ( s ^. #tags) ) stacks
 
-        forM_ filteredStacks $ \s -> do
+        forM_ stacks $ \s -> do
               say $ "Stack: " <> toText (s ^. #stackName)
               say $ "Status: " <> toText (s ^. #stackStatus)
               say $ "Created: " <> toText (s ^. #creationTime)
-              case s ^. #tags of
+              say $ "RoleARN: " <> toText (s ^. #roleARN. _Just)
+              case s ^. #capabilities of
                 Just ts -> do
-                  say "Tags:"
+                  say "Capabilities:"
                   forM_ ts $ \t -> do
-                        say $ "  " <> toText (t ^. #key) <> ": " <> toText (t ^. #value)
-                Nothing -> say "No Tags"
+                        say $ "  " <> toText (t ^. #fromCapability)
+                Nothing -> say "No Capabilities:"
 
-listStacks :: Region -> IO ()
+listStacks :: Env -> IO ()
 listStacks r = do
    describeTags r
    & runResourceT

@@ -80,6 +80,7 @@ executable tagsformation
       , amazonka-iam
       , base ^>=4.16.4.0
       , bytestring
+      , optparse-applicative
       , conduit
       , conduit-extra
       , exceptions
