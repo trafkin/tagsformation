@@ -11,7 +11,6 @@ import           Conduit                 (ResourceT)
 import           Control.Lens
 import           Control.Monad
 import           Data.Generics.Labels    ()
-import           Data.Maybe              (isJust)
 import           Helpers
 
 
@@ -42,7 +41,10 @@ describeTags env = do
                         say $ "  " <> toText (t ^. #fromCapability)
                 Nothing -> say "No Capabilities:"
 
-listStacks :: Env -> IO ()
+listStacks :: [Env] -> IO ()
 listStacks r = do
-   describeTags r
-   & runResourceT
+    let tasks = map describeTags r
+    
+    forM_ tasks $ \task -> do
+        task & runResourceT
+
