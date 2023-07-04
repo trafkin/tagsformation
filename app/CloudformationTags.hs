@@ -34,12 +34,10 @@ describeTags env = do
               say $ "Status: " <> toText (s ^. #stackStatus)
               say $ "Created: " <> toText (s ^. #creationTime)
               say $ "RoleARN: " <> toText (s ^. #roleARN. _Just)
-              case s ^. #capabilities of
-                Just ts -> do
-                  say "Capabilities:"
-                  forM_ ts $ \t -> do
-                        say $ "  " <> toText (t ^. #fromCapability)
-                Nothing -> say "No Capabilities:"
+              say "Capabilities:"
+              let capas =  (s ^.. #capabilities. _Just)  & concat 
+              forM_ capas $ \s' -> say $ " " <> toText s'
+                
 
 listStacks :: [Env] -> IO ()
 listStacks r = do
